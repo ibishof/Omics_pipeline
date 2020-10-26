@@ -1,8 +1,6 @@
 # Omic pipeline
 R scripts for proteomic and metabolic data analysis
 
-The depostory contains three pipelines:
-
 **Machine Learning:**
 A series of machine learning algorithms used for regression and classification. 
 - **New Tree Based Pipelines:**
@@ -26,7 +24,7 @@ The objective of this pipeline is to build a model that can predict diagnosis ba
 **New Tree Based Pipelines:**
 These pipelines use either Random forest, Extra Treees, or XGboost to both select features and build models. PCA is then used to visualize the seperation of classes. For regression analysis the true vs predicted values are plotted.
 
-**R_scripts**
+**R_scripts:**
 This contains short scripts rangeing from data cleaning, QC, model building, and visualization of results.
 
 Together this pipelines can inform the researcher what group of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.

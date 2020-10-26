@@ -24,9 +24,6 @@ The objective of GO-elite is to identify a  set of biological Ontology terms or 
 **Random Forest:**
 The objective of this pipeline is to build a model that can predict diagnosis based of relative protein abundance. The pipeline also calculates feature importance. This information can be used to find biomarker candidates.
 
-**New Tree Based Pipelines:**
-These pipelines use either Random forest, Extra Treees, or XGboost to both select features and build models. PCA is then used to visualize the seperation of classes. For regression analysis the true vs predicted values are plotted.
-
 **R_scripts:**
 This contains short scripts rangeing from data cleaning, QC, model building, and visualization of results.
 

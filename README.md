@@ -1,6 +1,9 @@
 # Omic pipeline
 R scripts for proteomic and metabolic data analysis
 
+**Data cleaning**
+Scripts to normalize and standardize data. Scripts to subset data based on column name. Scripts to remove samples with too many missing values. Convert NA/InF into zeros. 
+
 **Machine Learning:**
 A series of machine learning algorithms used for regression and classification. 
 - **New Tree Based Pipelines:**

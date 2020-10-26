@@ -24,8 +24,8 @@ The objective of GO-elite is to identify a  set of biological Ontology terms or 
 **Random Forest:**
 The objective of this pipeline is to build a model that can predict diagnosis based of relative protein abundance. The pipeline also calculates feature importance. This information can be used to find biomarker candidates.
 
-**R_scripts:**
-This contains short scripts rangeing from data cleaning, QC, model building, and visualization of results.
+**Visualization:**
+Methods for visualization of data and results.
 
 
 **Together this pipelines can inform the researcher what group of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.**

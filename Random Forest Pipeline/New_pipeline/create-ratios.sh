@@ -1,0 +1,1 @@
+sbatch --cpus-per-task=2 --mem=8g --partition=norm,quick --time=4:00:00 --job-name=create_ratios create-ratios-batch.sh

@@ -1,0 +1,13 @@
+directories:
+  work_directory: "/hpcdata/bcbb/bishof/UQ_lastone"
+  temporary_directory: "/hpcdata/scratch/bishof"
+  MaxQuant_directory: "//hpcdata/bcbb/bishof/UQ_80/MaxQuant/bin/MaxQuantCmd.exe"
+  mqparameters: "/hpcdata/bcbb/bishof/UQ_lastone/mqpar.xml"
+
+maxquant:
+  database_file: "/hpcdata/bcbb/bishof/UQ_lastone/UniProt_10090_Sept2018_JG.fasta"
+  raw_directory: "/hpcdata/bcbb/bishof/UQ_lastone"
+  threads: "16"
+  cores_nodes: "4threaded 16"
+  ex: ["cat", "dog", "bird"]
+  ram: "h_vmem=8G"

@@ -27,4 +27,5 @@ These pipelines use either Random forest, Extra Treees, or XGboost to both selec
 **R_scripts:**
 This contains short scripts rangeing from data cleaning, QC, model building, and visualization of results.
 
-Together this pipelines can inform the researcher what group of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.
+
+**Together this pipelines can inform the researcher what group of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.**

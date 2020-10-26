@@ -3,15 +3,15 @@ R scripts for proteomic and metabolic data analysis
 
 The depostory contains three pipelines:
 
-**Machine Learning**
+**Machine Learning:**
 A series of machine learning algorithms used for regression and classification. 
 - **New Tree Based Pipelines:**
 These pipelines use either Random forest, Extra Treees, or XGboost to both select features and build models. The pipelines build a model (Random forest, Extra Trees, XGboost), calculates accuratcy, feature importance, plots seperation via PCA, and recursively selects features. 
 
-**MaxQuant Bash Scripts**
+**MaxQuant Bash Scripts:**
 Scripts for running MaxQuant on a HPC in a Linux enviroment.
 
-**QC**
+**QC:**
 This contains a QC pipeline that can be used to idenify outliers and bad runs/samples in a dataset. Calculates and graphs number of zeros, median, and mean instenisty across samples. Histrograms of each feature, PCA plot and correlation matrix. 
 
 **WGCNA:**

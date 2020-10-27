@@ -28,4 +28,4 @@ The objective of this pipeline is to build a model that can predict diagnosis ba
 Methods for visualization of data and results.
 
 
-**Together this pipelines can inform the researcher what group of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.**
+**Together these pipelines can move from raw data to final models, network analysis, and visualization. Informing the researcher what groups of proteins are related to disease. What pathways these proteins are in and what proteins are best used as biomarkers.**

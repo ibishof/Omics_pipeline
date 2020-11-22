@@ -14,7 +14,7 @@ diag(tmp) <- 0
    
    library(caret)
    df2 = cor(training)
-   hc = findCorrelation(df2, cutoff=0.10) # putt any value as a "cutoff" 
+   hc = findCorrelation(df2, cutoff=0.10) # put any value as a "cutoff" 
    hc = sort(hc)
    reduced_Data = df1[,-c(hc)]
    print (reduced_Data)

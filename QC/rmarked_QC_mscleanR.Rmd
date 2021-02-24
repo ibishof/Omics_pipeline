@@ -1,0 +1,100 @@
+---
+title: "Untitled"
+author: "Isaac Bishof"
+date: "2/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```
+setwd("C:\\Users\\kqjf682\\Omics_pipelines\\msCleanr\\full_batch\\final_data")
+data <- read.csv("annotated_MS_peaks-cleaned.csv", row.names = "unique", stringsAsFactors = FALSE)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+# Isolate the metadata
+```
+metadata_cols <- c("selected_feature",	"annotation_result",	"annotation_warning",	"cluster.size",	"source",	"Alignment.ID",	"Average.Rt.min.",	"Average.Mz",	"Adduct.type",	"level",	"Formula",	"Structure",	"Total.score",	"Final.score",	"Title",	"MS1.count",	"MSMS.count",	"PRECURSORMZ",	"PRECURSORTYPE",	"Theoretical.mass",	"Mass.error",	"Formula.score",	"Ontology",	"InChIKey",	"SMILES",	"Links"
+)
+metadata <- data[,(metadata_cols)]
+```
+
+# Remove metadata
+```
+clean_data <- subset(data, select=-c(
+  cluster, selected_feature,	annotation_result,	annotation_warning,	cluster.size,	source,	Alignment.ID,	Average.Rt.min.,	Average.Mz,	Adduct.type,	level,	Formula,	Structure,	Total.score,	Final.score,	Title,	MS1.count,	MSMS.count,	PRECURSORMZ,	PRECURSORTYPE,	Theoretical.mass,	Mass.error,	Formula.score,	Ontology,	InChIKey,	SMILES,	Links, MS.MS.spectrum
+))
+```
+
+# Calculate the mean and median of each sample
+# Create bar plots of mean median and number of zeros
+```{r echo=FALSE}
+no_ID <- clean_data
+data_mean <- rowMeans(no_ID)
+data_median <- rowMedians(as.matrix(no_ID, na.rm = TRUE))
+data_zero <- apply(no_ID == 0, 1, sum) 
+
+# Create bar graph
+par(mfrow=c(1,3))
+par(mar=c(5,6,4,2))
+barplot(data_zero, main="Zeros",
+        xlab="Samples")
+barplot(data_mean, main="Mean",
+        xlab="Samples")
+barplot(data_median, main="Median",
+        xlab="Samples")
+
+```
+
+
+# Normalize data
+# get z-scores
+```
+library(BBmisc)
+clean_data <- normalize(clean_data, method = "standardize", range = c(0, 1), margin = 1L, on.constant = "quiet")
+numbers <- clean_data#[,-1]
+```
+
+# Histogram of Metabolites
+```
+metabolites <- as.data.frame(t(clean_data))
+
+par(mfrow=c(3,3))
+par(mar=c(5,6,4,2))
+
+for (col in 1:ncol(metabolites)) {
+  
+  hist(metabolites[,col],
+       main = colnames(metabolites[,col, drop = FALSE]),
+       breaks=100,
+       #xlim=c(0,.01),
+       col="darkmagenta")
+}
+```
+
+# Histrogram of Sample
+
+```
+par(mfrow=c(4,3))
+par(mar=c(5,6,4,2))
+for (col in 1:ncol(numbers)) {
+  hist(numbers[,col],
+       main = colnames(numbers[,col, drop = FALSE]),
+       breaks = 40,
+       #xlim=c(0,.01),
+       col = "darkmagenta")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

@@ -6,7 +6,7 @@ output:
 
 ## Objective
 
-Your task is to explore this data set and identify any proteins that you believe to be changing in abundance through time and as a result of the stress induction. This report includes code and supporting visualizations to address these questions.
+The task is to explore this data set and identify any proteins that you believe to be changing in abundance through time and as a result of the stress induction. This report includes code and supporting visualizations to address these questions.
 
 ```{r setup, include=FALSE}
 # Load necessary libraries
@@ -78,39 +78,33 @@ n_distinct(unique_data$Gene)
 
 
 # Measure Technical Sources of Variation
-CV for batch variance:  0.0423019009337235;
-CV for replicate variance:  0.0301719802688572
+CV for batch variance:  0.0604009664033113;
+CV for replicate variance:  0.0499613739990236
 
 As expected Batch variance is higher than replicate variance
 ```{r}
 # Calculate SD across batches for each peptide
 batch_sd <- data %>%
-  group_by(Peptide, Replicate, CellType) %>%
+  group_by(Peptide, Replicate, CellType, Time) %>%
   summarise(batch_sd = sd(Log_Intensity, na.rm = TRUE))
-
-# Create table containing peptides with replicates in a single condition
-peptide_replicates <- data %>%
-  group_by(Peptide, CellType, Time, Batch) %>%
-  filter(n() >= 2) %>%
-  ungroup()
 
 # Calculate variance within each replicate for each peptide
 replicate_sd <- data %>%
-  group_by(Peptide, Batch, CellType) %>%
+  group_by(Peptide, Batch, CellType, Time) %>%
   summarise(replicate_sd = sd(Log_Intensity, na.rm = TRUE))
 
 # Calculate means across batches
 batch_mean <- data %>%
-  group_by(Peptide, Replicate, CellType) %>%
+  group_by(Peptide, Replicate, CellType, Time) %>%
   summarise(batch_mean = mean(Log_Intensity, na.rm = TRUE))
 
 # Calculate means across replicates
 replicate_mean <- data %>%
-  group_by(Peptide, Batch, CellType) %>%
+  group_by(Peptide, Batch, CellType, Time) %>%
   summarise(replicate_mean = mean(Log_Intensity, na.rm = TRUE))
 
-cv_batch_var <- mean(batch_sd$batch_sd/batch_mean$batch_mean)
-cv_replicate_var <- mean(replicate_sd$replicate_sd/replicate_mean$replicate_mean)
+cv_batch_var <- mean(batch_sd$batch_sd/batch_mean$batch_mean, na.rm = T)
+cv_replicate_var <- mean(replicate_sd$replicate_sd/replicate_mean$replicate_mean, na.rm = T)
 
 # Print out the CVs
 print(paste("CV for batch variance: ", cv_batch_var))
@@ -422,8 +416,8 @@ for ( protein in unique(peptide_stressed_corr_table$ProteinID)){
   data_subset_control <- subset(peptide_control_corr_table, ProteinID == protein)
   
   # Create boxplot
-  boxplot(data_subset_stressed$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_stressed$Gene), " stressed"), col = "red")
-  boxplot(data_subset_control$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_control$Gene), " control"), col = "blue")
+  boxplot(data_subset_stressed$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_stressed$Gene), " stressed"), col = "red", ylab = "Corr")
+  boxplot(data_subset_control$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_control$Gene), " control"), col = "blue", ylab = "Corr")
 }
 ```
 
@@ -449,8 +443,8 @@ for (protein in gene_names){
   data_subset_control <- subset(peptide_control_corr_table, Gene == protein)
   
   # Create boxplot
-  boxplot(data_subset_stressed$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_stressed$Gene), " stressed"), col = "red")
-  boxplot(data_subset_control$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_control$Gene), " control"), col = "blue")
+  boxplot(data_subset_stressed$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_stressed$Gene), " stressed"), col = "red", ylab = "Corr")
+  boxplot(data_subset_control$Correlation, ylim = c(-1,1), main = paste0(unique(data_subset_control$Gene), " control"), col = "blue", ylab = "Corr")
 }
 
 ```

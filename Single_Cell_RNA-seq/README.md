@@ -243,6 +243,7 @@ VlnPlot(pbmc, features = biomarkers, slot = "counts", log = TRUE)
 ```{r}
 VlnPlot(pbmc, c("IL7R", "CCR7", "SELL"))
 ```
+![Native t-cell VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/Native_t-cell.png)
 
 ## TH2 t-cells
 ```{r}

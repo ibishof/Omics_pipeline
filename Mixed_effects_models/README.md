@@ -1,10 +1,10 @@
-## Title: "Proteomics Data Analysis"
+# Title: "Proteomics Data Analysis"
 
 ## Objective
 
 The task is to explore this data set and identify any proteins that you believe to be changing in abundance through time and as a result of the stress induction. This report includes code and supporting visualizations to address these questions.
 
-# Link with plots and code below:
+## Link with plots and code below:
 
 - [See HTML version with embended plots](https://htmlpreview.github.io/?https://github.com/ibishof/Omics_pipeline/blob/main/Mixed_effects_models/Proteomic_Analysis_Rmarkdown2.html)
 
@@ -20,14 +20,14 @@ library(kableExtra)
 ```
 
 
-# Bring in data
+## Bring in data
 ```{r}
 setwd("C:\\Users\\ibish\\data")
 data <- read.csv("proteomicsSampleData.csv")
 ```
 
 
-# Explore Data
+## Explore Data
 ```{r}
 # Print unique batch name
 unique(data$Batch)
@@ -56,7 +56,7 @@ n_distinct(data$ProteinID)
 ```
 
 
-# Create Reference
+## Create Reference
 Use as peptide protein conversion table
 ```{r}
 # Remove rows with duplicate 'Peptide' values, keeping only the first occurrence
@@ -77,7 +77,7 @@ n_distinct(unique_data$Gene)
 
 
 
-# Measure Technical Sources of Variation
+## Measure Technical Sources of Variation
 CV for batch variance:  0.0604009664033113;
 CV for replicate variance:  0.0499613739990236
 
@@ -163,7 +163,7 @@ for(protein in unique(data$ProteinID)) {
 ```
 
 
-# Correct for multple hypothesis
+## Correct for multple hypothesis
 FDR was used because it provides a balance between controlling for Type I errors (false positives) and not being too conservative so as to miss potentially significant results (Type II errors). Plus commonly used so people are familiar with it.
 ```{R}
 options(scipen=0)
@@ -185,14 +185,14 @@ results_time_stress$p_value_time_stress_adjusted <- formatC(results_time_stress$
 ```
 
 
-# Table of p-values
+## Table of p-values
 ```{R}
 kable(results_time_stress, format = "html", table.attr = 'class="table table-striped"') %>%
   column_spec(7, background = "yellow", color = "black")
 ```
 
 
-# Correlation Analysis
+## Correlation Analysis
 As an orthogonal approach, I aim to measure the correlation of each peptide with time under both conditions. Subsequently, I will bin the peptides by protein and create plots. Highly significant proteins, such as PDCD11 and SVIL, should exhibit markedly different relationships with time under stressed conditions compared to control conditions.
 
 
@@ -200,14 +200,14 @@ As an orthogonal approach, I aim to measure the correlation of each peptide with
 First, lots of formatting needs to be done to measure correlation. This includes subsetting by condition, summarizing peptide intensities across time points, and handling missing values.
 
 
-# Subset by Condition
+## Subset by Condition
 ```{R}
 # Filter data to subset by condition
 control <- filter(data,  CellType == "Control")
 stressed <- filter(data, CellType == "Stress")
 
 
-# Create subsets based on unique time values
+## Create subsets based on unique time values
 for(time in unique(control$Time)) {
   assign(paste0("control_", time), subset(control, Time == time))
 }
@@ -218,7 +218,7 @@ for(time in unique(stressed$Time)) {
 ```
 
 
-# Summarize Peptide Intensities
+## Summarize Peptide Intensities
 Ignore Batch and Replicate effects.
 ```{R}
 
@@ -277,7 +277,7 @@ for (time in unique(stressed$Time)){
 ```
 
 
-# Explore Peptide Completeness
+## Explore Peptide Completeness
 Control has more missing data then stress
 ```{R}
 
@@ -293,7 +293,7 @@ colSums(is.na(stressed_means[,-1]))
 ```
 
 
-# Remove peptides with half or more of the values being NA
+## Remove peptides with half or more of the values being NA
 ```{R}
 # Count the number of NA values for each row, excluding the first column
 na_counts <- apply(control_means[ , -1], 1, function(x) sum(is.na(x)))
@@ -312,7 +312,7 @@ clean_stressed_means <- stressed_means[!rows_to_remove, ]
 ```
 
 
-# Find correlation between all features and age
+## Find correlation between all features and age
 ```{R}
 
 # Find correlation between all features and age
@@ -353,7 +353,7 @@ p_stressed_fdr <- p.adjust(as.numeric(p_stressed), method = "fdr")
 ```
 
 
-# Summarize correlation and p-values into nice readable tables
+## Summarize correlation and p-values into nice readable tables
 ```{R}
 # Initialize a data frame to store correlation metrics for peptides.
 # Each metric (e.g., correlation coefficient, p-value, FDR-adjusted p-value, etc.) is placed in a separate column.
@@ -384,7 +384,7 @@ peptide_stressed_corr_table <- merge(peptide_conversion, peptide_stressed_corr_t
 ```
 
 
-# Hand Check highly correlates peptides
+## Hand Check highly correlates peptides
 ```{R}
 
 # Filter the row and drop the Peptide column
@@ -398,7 +398,7 @@ plot(time_points_stress, single_peptide, pch = 19, col = "blue", main = "K.IYEDG
 ```
 
 
-# Boxplots of peptide correlations
+## Boxplots of peptide correlations
 Each peptide is plotted as a single data point. The "spread" in correlation for each protein becomes easy to visualized.
 ```{R}
 # Sort peptide_stressed_corr_table by Gene A-Z
@@ -422,7 +422,7 @@ for ( protein in unique(peptide_stressed_corr_table$ProteinID)){
 ```
 
 
-# Top 2 Most Significantly Changed and Least Significantly Changed Proteins Due to Time and Stress
+## Top 2 Most Significantly Changed and Least Significantly Changed Proteins Due to Time and Stress
 Here, one can clearly see that the correlation patterns for peptides belonging to proteins PDCD11 and SVIL are very different in stressed (red) and control (blue) conditions. In contrast, PSMD5 and RB1CC1 look very similar under both control and stressed conditions. The correlations for their peptides are also highly variable, moving both up and down, suggesting that these proteins do not exhibit a consistent linear relationship to time in this experiment.
 
 ```{R}

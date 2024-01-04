@@ -314,40 +314,48 @@ DoHeatmap(pbmc, features = top10$gene) + NoLegend()
 # Annotation
 ```{r}
 ref <- celldex::HumanPrimaryCellAtlasData()
-```{r}
+```
 - Add reference data set
 ## View labels
+```{r}
 View(as.data.frame(colData(ref)))
 counts <- GetAssayData(pbmc, layer = 'counts')
-
+```
 ## Perform annotation
+```{r}
 singleR_results <- SingleR(test = counts, ref = ref, labels = ref$label.main)
 singleR_results
+```
 
 ## Add annotation to Seurat object
+```{r}
 pbmc$singleR.labels <- singleR_results$labels[match(rownames(pbmc@meta.data), rownames(singleR_results))]
 DimPlot(pbmc, reduction = 'umap', group.by = 'singleR.labels')
+```
 
 ## Add SingleR annotations to Seurat object metadata
+```{r}
 pbmc <- AddMetaData(pbmc, metadata = singleR_results$labels, col.name = "singleR_pred")
+```
 
 # Diagnostics
-# Columns are cells and rows are labels
+## Columns are cells and rows are labels
+```{r}
 plotScoreHeatmap(singleR_results)
-
+```
 ## See how many cell in each category was pruned
 ```{r}
 plotDeltaDistribution(singleR_results)
 summary(is.na(singleR_results$pruned.labels))
 ```
 
-# Examine the expression of the marker genes for each label in the dataset
+## Examine the expression of the marker genes for each label in the dataset
 ```{r}
 all.markers <- metadata(singleR_results)$de.genes
 count$labels <- singleR_results$labels
 ```
 
-# Compare results to unsupervised clustering
+## Compare results to unsupervised clustering
 ```{r}
 tab <- table(Assigned = singleR_results$labels, Clusters = pbmc$seurat_clusters)
 tab

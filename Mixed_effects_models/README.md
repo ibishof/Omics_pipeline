@@ -1,8 +1,4 @@
----
-title: "Proteomics Data Analysis"
-output:
-  html_document: default
----
+## Title: "Proteomics Data Analysis"
 
 ## Objective
 
@@ -22,7 +18,7 @@ library(kableExtra)
 
 # Bring in data
 ```{r}
-setwd("C:\\Users\\ibish\\calico")
+setwd("C:\\Users\\ibish\\data")
 data <- read.csv("proteomicsSampleData.csv")
 ```
 

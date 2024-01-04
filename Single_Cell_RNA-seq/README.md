@@ -245,14 +245,15 @@ VlnPlot(pbmc, c("IL7R", "CCR7", "SELL"))
 ```
 ![Native t-cell VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/Native_t-cell.png)
 
-## TH2 t-cells
-```{r}
-VlnPlot(pbmc, c("GATA3", "IL4", "IL2","IL13"))
-```
-
 ## TH1 t-cells
 ```{r}
 VlnPlot(pbmc, c("IFNG", "TBX21", "IL5","IL12RB1"))
+```
+
+## TH2 t-cells
+```{r}
+VlnPlot(pbmc, c("GATA3"))
+![TH1 t-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/th1_cells.png)
 ```
 
 ## Interferon-related immune active t-cells

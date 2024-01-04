@@ -249,22 +249,25 @@ VlnPlot(pbmc, c("IL7R", "CCR7", "SELL"))
 ```{r}
 VlnPlot(pbmc, c("IFNG", "TBX21", "IL5","IL12RB1"))
 ```
+![TH1 t-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/TH1_cells.png)
 
 ## TH2 t-cells
 ```{r}
 VlnPlot(pbmc, c("GATA3"))
-![TH1 t-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/th1_cells.png)
 ```
+![TH2 t-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/th2_cells.png)
 
 ## Interferon-related immune active t-cells
 ```{r}
 VlnPlot(pbmc, c("OAS1", "OAS2", "OAS3", "EIF2AK2"))
 ```
+![Interferon-related immune active t-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/interferon.png)
 
 ## Memory CD4+
 ```{r}
 VlnPlot(pbmc, c("IL7R", "S100A4"))
 ```
+![Memory CD4+ VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/memory_cd4.png)
 
 ## CD14+ Mono
 ```{r}

@@ -273,13 +273,14 @@ VlnPlot(pbmc, c("IL7R", "S100A4"))
 ```{r}
 VlnPlot(pbmc, c("CD14", "LYZ"))
 ```
+![Memory CD14+ Mono VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/cd14.png)
 
 
 ## FCGR3A+ Mono
 ```{r}
 VlnPlot(pbmc, c("FCGR3A", "MS4A7"))
 ```
-
+![FCGR3A+ Mono VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/FCGR3A.png)
 
 ## CD8+T
 ```{r}
@@ -297,7 +298,7 @@ VlnPlot(pbmc, c("MS4A1"))
 ```{r}
 VlnPlot(pbmc, c("GNLY", "NKG7"))
 ```
-![B-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/b-cell.png)
+![B-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/nk_cells.png)
 
 ## DC cells
 ```{r}
@@ -354,6 +355,8 @@ pbmc <- AddMetaData(pbmc, metadata = singleR_results$labels, col.name = "singleR
 ```{r}
 plotScoreHeatmap(singleR_results)
 ```
+![Heatmap VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/heatmap.png)
+
 ## See how many cell in each category was pruned
 ```{r}
 plotDeltaDistribution(singleR_results)

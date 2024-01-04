@@ -274,36 +274,42 @@ VlnPlot(pbmc, c("IL7R", "S100A4"))
 VlnPlot(pbmc, c("CD14", "LYZ"))
 ```
 
+
 ## FCGR3A+ Mono
 ```{r}
 VlnPlot(pbmc, c("FCGR3A", "MS4A7"))
 ```
 
+
 ## CD8+T
 ```{r}
 VlnPlot(pbmc, "CD8A")
 ```
+![CD8+T VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/CD8T.png)
 
 ## B-cells VlnPlpt
 ```{r}
 VlnPlot(pbmc, c("MS4A1"))
 ```
+![B-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/b-cell.png)
 
 ## NK cells
 ```{r}
 VlnPlot(pbmc, c("GNLY", "NKG7"))
 ```
+![B-cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/b-cell.png)
 
 ## DC cells
 ```{r}
 VlnPlot(pbmc, c("FCER1A", "CST3"))
 ```
+![DC cells VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/dc.png)
 
 ## Platelet VlnPlpt
 ```{r}
 VlnPlot(pbmc, c("PPBP"))
 ```
-
+![Platelet VlnPlpt](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/platelet.png)
 
 ## DoHeatmap() generates an expression heatmap for given cells and features. 
 - In this case, we are plotting the top 20 markers (or all markers if less than 20) for each cluster.

@@ -4,6 +4,10 @@
 
 The task is to explore this data set and identify any proteins that you believe to be changing in abundance through time and as a result of the stress induction. This report includes code and supporting visualizations to address these questions.
 
+# Link with plots and code below:
+
+- [See HTML version with embended plots](https://htmlpreview.github.io/?https://github.com/ibishof/Omics_pipeline/blob/main/Mixed_effects_models/Proteomic_Analysis_Rmarkdown2.html)
+
 ```{r setup, include=FALSE}
 # Load necessary libraries
 library(dplyr)

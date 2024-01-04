@@ -2,10 +2,9 @@
 
 ![UMAP Annotated](https://github.com/ibishof/Omics_pipeline/raw/main/Single_Cell_RNA-seq/images/umap_annotated.png)
 
-- This pipeline using the Seurat and SingleR packages take in Single Cell RNA-seq data and then cleans the data, normalizes, removes unwanted sources of variation, cluster the cells, and finally annotes the cells. 
-Genes that show significant variation in expression levels across different cells are selected for the PCA feature reduction step. These PCs are then used as input for the FindNeighbors() fucntion. This function clusters cells by using a K-nearest neighbor (KNN) graph, with edges drawn between cells with similar feature expression patterns, weights of edges are applied using jaccard similarity. Boundries between clusters is deteremined using the Louvain algorithm.
+- This pipeline utilizes the Seurat and SingleR packages, takes in Single Cell RNA-seq data, and then cleanses the data, normalizes it, removes unwanted sources of variation, clusters the cells, and finally annotates them. Genes that show significant variation in expression levels across different cells are selected for the PCA feature reduction step. These principal components are then used as input for the FindNeighbors() function. This function clusters cells by using a K-nearest neighbor (KNN) graph, with edges drawn between cells that exhibit similar feature expression patterns; the weights of edges are applied using Jaccard similarity. Boundaries between clusters are determined using the Louvain algorithm
 
-- Once clusters have been defined annotation is performed using SingleR. The SingleR packages leverages a selected reference dataset to label each cell in each cluster. Diagnostics are then performed to exsamine the alignment of the annotation. These annotations in addition to other dataset like [Protein Atlas Single Cell Database](https://www.proteinatlas.org/humanproteome/single+cell+type) are thenused to finally label the cluster and plot them via umap.
+- Once clusters have been defined annotation is performed using SingleR. The SingleR packages leverages a selected reference dataset to label each cell in each cluster. Diagnostics are then performed to exsamine the alignment of the annotation. These annotations in addition to other dataset like [Protein Atlas Single Cell Database](https://www.proteinatlas.org/humanproteome/single+cell+type) are then used to finally label the cluster and plot them via umap.
 
 
 ## Load librarys

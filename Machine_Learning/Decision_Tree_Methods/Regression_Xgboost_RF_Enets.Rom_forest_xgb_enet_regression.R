@@ -1,3 +1,4 @@
+# This script uses random forest for intertative feature selection and then feeds those features to Xgboost and Elastic net. Model performance is recorded at each interation and then summarized at the end.
 # Various R packages that are required
 library(readr)
 library(dplyr)

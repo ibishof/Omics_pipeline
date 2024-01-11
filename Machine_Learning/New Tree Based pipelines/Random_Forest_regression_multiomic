@@ -1,4 +1,4 @@
-# The pipeline ingest data, builds models, selects top features, and summarizes performance.
+# The pipeline ingest data multiomic data from multiple tables, builds models, selects top features, and summarizes performance.
 
 ## Automate pipeline
 library(dplyr)

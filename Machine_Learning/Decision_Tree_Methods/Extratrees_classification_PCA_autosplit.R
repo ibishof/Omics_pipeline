@@ -1,5 +1,5 @@
 # First time running this pipeline you will need to install some R packages
-# 
+# Extratrees is similar to random froest, it can have better performance on noise weak signal data
 # Various R packages that are required
 library(readr)
 library(dplyr)

@@ -1,6 +1,9 @@
 # Omic pipeline
 R scripts for proteomic and metabolic data analysis
 
+**Graph_ML**
+Scripts that handle non-euclidean data such as graphs
+
 **Data cleaning:**
 Scripts to normalize and standardize data. Scripts to subset data based on column name. Scripts to remove samples with too many missing values. Convert NA/InF into zeros. 
 

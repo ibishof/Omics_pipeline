@@ -4,10 +4,10 @@ R scripts for proteomic and metabolic data analysis
 **Data cleaning:**
 Scripts to normalize and standardize data. Scripts to subset data based on column name. Scripts to remove samples with too many missing values. Convert NA/InF into zeros. 
 
-**Graph_ML**
+**Graph_ML:**
 Scripts that handle non-euclidean data such as graphs
 
-**LLM**
+**LLM:**
 NLP pipeline to programmatically identify relevant information from large bodies electronic health data, utilizing the chat-gpt API
 
 **Machine Learning:**

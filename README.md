@@ -7,6 +7,9 @@ Scripts to normalize and standardize data. Scripts to subset data based on colum
 **Graph_ML**
 Scripts that handle non-euclidean data such as graphs
 
+**LLM**
+NLP pipeline to programmatically identify relevant information from large bodies electronic health data, utilizing the chat-gpt API
+
 **Machine Learning:**
 A series of machine learning algorithms used for regression and classification. 
 - **New Tree Based Pipelines:**

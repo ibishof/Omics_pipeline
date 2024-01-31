@@ -1,7 +1,7 @@
 # Machine Learning Pipelines
 
 **Clustering:**
-Scripts for unsupervised clustering. 
+Scripts for unsupervised clustering. Leveraging methods like k-means, hierarchical clustering, and graph-based approaches.
 
 **Decision_Tree_Methods:**
 These pipelines use either Random forest, Extra Treees, or XGboost to both select features and build models. The pipelines build a model (Random forest, Extra Trees, XGboost), calculates accuracy, feature importance, plots seperation via PCA, and recursively selects features. 

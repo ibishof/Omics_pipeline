@@ -10,7 +10,7 @@ These pipelines use either Random forest, Extra Treees, or XGboost to both selec
 These scripts use PCA or WGCNA outputs to reduce feature space
 
 **Linear_Models:**
-Elastic Net and other variouslinear models for classification and regression
+Elastic Net and other various linear models for classification and regression
 
 **Other:**
 Miscellaneous other modeling techniques

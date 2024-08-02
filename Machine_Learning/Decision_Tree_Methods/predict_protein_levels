@@ -1,0 +1,270 @@
+# The pipeline ingest data multiomic data from multiple tables, builds models, selects top features, and summarizes performance.
+
+## Automate pipeline
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(ranger)
+library(caret)
+
+# Pull in data
+setwd("/mnt/ibishof/Isaac_project_test/sourcedata/filter")
+group_output <- read_tsv("EXP19072_50_51_52_53_full_may31_QC_DIA_processed_protein_group_intensities_20240605_min_filter.tsv")
+
+
+# Used to create metadata, only run once
+metadata <- as.data.frame(cbind(colnames(group_output), as.vector(group_output[1,])))
+metadata <- rename(metadata, group = V1, sample_id = V2)
+metadata <- as.data.frame(metadata[-c(1:2),])
+metadata <- apply(metadata,2,as.character)
+metadata <- as.data.frame(metadata)
+
+# Subset by conditions
+if (any(grepl("_norm", metadata$sample_id))){
+  metadata <- filtered_metadata <- metadata[grep("_norm", metadata$sample_id), ]
+}
+
+# Bring in data without strings
+group_output <- read_tsv("EXP19072_50_51_52_53_full_may31_QC_DIA_processed_protein_group_intensities_20240605_min_filter.tsv", skip = 1)
+
+# Select only normalized data columns
+data = select(group_output, metadata$sample_id)
+
+# Remove rows with over 50% missing
+na_proportion <- rowMeans(is.na(data))
+# Filter out rows with more than 50% NAs
+data <- data[na_proportion <= 0.5, ,drop = FALSE]
+rownames(data) <- group_output$`UniProt ID`[na_proportion <= 0.5]
+
+# Transpose data to make samples ros and proteins columns
+data = as.data.frame(t(data))
+
+# Function to replace NA with column minimum
+replace_na_with_min <- function(x) {
+  min_value <- min(x, na.rm = TRUE)  # Calculate the column minimum ignoring NA
+  x[is.na(x)] <- min_value           # Replace NA with the column minimum
+  return(x)
+}
+
+# Apply the function to each column
+data <- data.frame(apply(data, 2, replace_na_with_min))
+
+# Perform k-fold data subsetting
+k = 10
+data_size=nrow(data)
+data_var <- data
+for (w in 1:k){
+  indexes=sample(1:nrow(data_var),size = 1/k*data_size)
+  fold=data[indexes,]
+  assign(paste0("fold",w), fold)
+  remove(fold)
+  data_var=data_var[-indexes,]
+}
+
+# Select Training and validation set
+proteins = colnames(data)
+proteins = proteins
+variable_importance_summary = data.frame(matrix(ncol = 0, nrow = ncol(data)-1))
+data.dir <- "/mnt/ibishof/Isaac_project_test/sourcedata/model_results"
+setwd(data.dir)
+for (p in proteins) {
+  for (i in 1:k){
+    v_fold <- paste0("fold",i )
+    validation <- get(v_fold)
+    #validation <- select(validation, -p)
+    
+    remove_sample <- row.names(validation)
+    training <- data[!rownames(data) %in% remove_sample, ]
+    #training <- select(training, -p)
+    
+    
+    # Selecting tuning parameter based on the size of the data
+    # if() statement was added to account for iterations with very few ratios
+    training <- as.data.frame(training)
+    nvars <- floor(3*sqrt(dim(training)[2]))
+    if(nvars >= dim(training)[2]-1){nvars <- floor(sqrt(dim(training)[2]))}
+    
+    
+    
+    # Create the model using ranger
+    rating_mod <- ranger(data=training, # The full dataset containing predictors and response variables
+                         num.trees=400, # number of trees in the forest
+                         mtry=nvars,      # number of variables to sample for each split
+                         importance='impurity',  # Type of variable importance measure to calculate
+                         num.threads=16,      # Number of threads for parallelization
+                         write.forest = TRUE,
+                         seed=87,              # setting a seed for reproducibility, DUMZ argument from Rswarm utility
+                         #regularization.usedepth = TRUE,
+                         #regularization.factor = 5,
+                         dependent.variable.name=p)
+
+# Use model to predict and then test to see how accurate those predictions are
+training_predictions <- predict(rating_mod,training)
+training_cor <- cor(training_predictions$predictions,training[[p]], method = "spearman")
+cal_rmse_train = mean((training_predictions$predictions-training[[p]])^2)^0.5
+
+# Create predictions using the validation dataset and calcualte accuracy
+predictions <- predict(rating_mod,validation)
+test_cor <- cor(predictions$predictions,validation[[p]], method = "spearman")
+cal_rmse = mean((predictions$predictions-validation[[p]])^2)^0.5
+
+# Plot predictions vs true vlaues
+par(mfrow=c(1,1))
+Title <- paste("Scatter Plot", p)
+plot(predictions$predictions, validation[[p]], main= Title,
+     xlab="Predictions", ylab="True Values", cex.lab = 1.5, pch=19)
+abline(0,1, col = "red")
+
+# Merge all variable importance data across folds
+if (i != 1){
+  variable_importance_new_fold <- as.data.frame(rating_mod$variable.importance)
+  new_name <- paste0(ncol(training),"_Features_", "Fold",i)
+  variable_importance_new_fold <- variable_importance_new_fold %>% 
+    rename(
+      !!new_name := 'rating_mod$variable.importance')
+  
+  variable_importance_new_fold$Features <- row.names(variable_importance_new_fold)
+  variable_importance <- merge(variable_importance, variable_importance_new_fold, by="Features", all=TRUE)
+}
+
+# For first fold
+if (i == 1){
+  variable_importance <- as.data.frame(rating_mod$variable.importance)
+  variable_importance$Features <- row.names(variable_importance)
+  variable_importance <- variable_importance %>% 
+    rename(
+      Fold1 = 'rating_mod$variable.importance')
+}
+
+# For last fold
+if (i == k){
+  variable_importance_single_summary <- data.frame(
+    Features = variable_importance$Features,
+    setNames(list(rowMeans(variable_importance[,-1], na.rm = TRUE)), paste0(p, "_", "mean")),
+    setNames(list(apply(variable_importance[,-1], 1, function(x) sd(x, na.rm = T))), paste0(p, "_", "sd"))
+  )
+  variable_importance_single_summary[[paste0(p, "_signal")]] <- variable_importance_single_summary[[paste0(p, "_mean")]] / variable_importance_single_summary[[paste0(p, "_sd")]]
+  
+  variable_importance_summary <- cbind(variable_importance_summary, variable_importance_single_summary )
+}
+
+# Record perfomance and results    
+# Add everything to list
+if (exists("list_test_cor")){
+  list_test_cor1 <- cbind(p, paste0(p, "_", "fold", i), test_cor, cal_rmse)
+  list_test_cor <- rbind(list_test_cor, list_test_cor1)
+}
+if (isFALSE(exists("list_test_cor"))){
+  list_test_cor <- cbind(p, paste0(p, "_", "fold", i), test_cor, cal_rmse)
+}
+# Create training AUC_IDB001516 list
+if (exists("list_train_cor")){
+  list_train_cor1 <- cbind(p, paste0(p, "_", "fold", i), training_cor, cal_rmse_train)
+  list_train_cor <- rbind(list_train_cor, list_train_cor1)
+}
+if (isFALSE(exists("list_train_cor"))){
+  list_train_cor <- cbind(p, paste0(p, "_", "fold", i), training_cor, cal_rmse_train)
+}
+
+
+
+
+
+
+# Save model
+# rds_file_name <- paste0("AUC_IDB001516", as.numeric(ncol(training)), ".rds")
+# saveRDS(rating_mod, file = rds_file_name)
+###################################
+###################################
+p == proteins[length(proteins)]
+# Summarize model performance and results
+if (p == proteins[length(proteins)]){
+  list_test_cor1 <- as.data.frame(list_test_cor)
+  list_test_cor1$test_cor <- as.numeric(as.character(list_test_cor1$test_cor ))
+  
+  # Group by feature number
+  results_summarised <- list_test_cor1 %>%
+    group_by(p) %>%
+    summarize(mean(test_cor))
+  
+  results_summarisedSD <- list_test_cor1 %>%
+    group_by(p) %>%
+    summarize(sd(test_cor))
+  
+  results_summarised <- merge(results_summarised, results_summarisedSD, by = "p")
+  
+  results_summarised <- results_summarised %>%
+    mutate(
+      Signal = `mean(test_cor)`/`sd(test_cor)`
+    )
+  
+  # Save the results
+  write.csv(list_train_cor, "list_train_cor.csv")
+  write.csv(list_test_cor, "list_test_cor.csv")
+  write.csv(results_summarised, "results_summarised.csv")
+}
+  }
+}
+write.csv(variable_importance_summary, "variable_importance_summary.csv")
+
+
+
+selected_columns <- variable_importance_summary[, grep("_mean", colnames(variable_importance_summary))]
+rownames(selected_columns) = variable_importance_summary$Features
+selected_columns$UniProt.ID <- variable_importance_summary$Features
+
+selected_columns = merge(conversion_table, selected_columns, by = "UniProt.ID")
+
+
+P25705 = select(selected_columns, P25705_mean, Gene)
+
+
+
+
+# Make into adjacnecy matrix
+
+# Initialize an empty list to store the top 10 connections for each protein
+protein_columns <- seq(1, ncol(variable_importance_summary), by = 4)
+top_connections <- list()
+
+# Iterate over the protein columns
+for (i in protein_columns) {
+  protein_id <- gsub("_mean", "", colnames(variable_importance_summary)[i+1])
+  feature_col <- variable_importance_summary[[i]]
+  mean_col <- variable_importance_summary[[i + 1]]
+  
+  # Create a dataframe of features and their mean values
+  protein_data <- data.frame(feature = feature_col, mean_value = mean_col)
+  
+  # Get the top 10 connections based on mean value
+  top10 <- protein_data %>%
+    arrange(desc(mean_value)) %>%
+    head(10) %>%
+    pull(feature)
+  
+  # Store the top 10 connections in the list
+  top_connections[[protein_id]] <- top10
+}
+
+
+# Get the list of unique proteins
+all_proteins <- colnames(data)
+
+# Initialize an empty adjacency matrix
+adj_matrix <- matrix(0, nrow = length(all_proteins), ncol = length(all_proteins),
+                     dimnames = list(all_proteins, all_proteins))
+
+# Fill the adjacency matrix based on top connections
+for (protein in names(top_connections)) {
+  for (connected_protein in top_connections[[protein]]) {
+    adj_matrix[protein, connected_protein] <- 1
+  }
+}
+
+# Print the adjacency matrix
+print(adj_matrix)
+
+hist(apply(adj_matrix, 2, sum), breaks = 40)
+write.csv(adj_matrix, "adj_matrix.csv")
+
